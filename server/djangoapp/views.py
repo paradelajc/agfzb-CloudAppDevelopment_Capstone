@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-# from .models import related models
-# from .restapis import related methods
+from .models import CarDealer, CarModel, CarMake, DealerReview
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -75,16 +75,46 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
-    context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/index.html', context)
-
+        context = {}
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/45207528-e080-4fe9-b94d-7bb3c269b1f1/dealership-package/get-dealership"
+        # return render(request, 'djangoapp/index.html', context)
+        dealerships = get_dealers_from_cf(url)
+        # Concat all dealer's short name
+        context["dealerships_list"] = dealerships
+        # Return a list of dealer short name
+        return render(request, "djangoapp/index.html", context)
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
-# ...
-
+def get_dealer_details(request, dealer_id):
+    if request.method == "GET":
+        url = " https://us-south.functions.appdomain.cloud/api/v1/web/45207528-e080-4fe9-b94d-7bb3c269b1f1/dealership-package/get-review"
+        dealer_details = get_dealer_reviews_from_cf(url, dealer_id)
+        # dealer_reviews = ' '.join([item.review for item in dealer_details])
+        return HttpResponse(dealer_details)
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
-# ...
+
+def add_review(request, dealer_id):
+    
+    if request.user.is_authenticated:
+        print(request.method)
+        if request.method == "GET":
+            review = dict()
+            review["dealership"] = 23
+            review["id"] = 1234
+            review["name"] = "Lili Black"
+            review["review"] = "This is a great dealer"
+            review["car_make"] = "Tesla"
+            review["car_model"] = "S"
+            review["purchase"] = False
+            review["car_year"] = 2022
+            review["purchase_date"] = "10/06/2022"
+            json_payload = dict()
+            json_payload["review"] = review
+            url = "https://us-south.functions.appdomain.cloud/api/v1/web/45207528-e080-4fe9-b94d-7bb3c269b1f1/dealership-package/post-review"
+            print(json_payload)
+            post_request(url, json_payload, id=dealer_id)
+        return HttpResponse("hello")
 
