@@ -91,7 +91,23 @@ def get_dealer_reviews_from_cf(url, dealer_id):
             results.append(review_obj)
     return results
 
-
+def get_dealer_by_id_from_cf(url, dealerId):
+    json_result = get_request(url, id=dealerId )
+    if json_result:
+        dealer_doc = json_result[0]
+        dealer_obj = CarDealer(
+            address=dealer_doc["address"],
+            city=dealer_doc["city"],
+            full_name=dealer_doc["full_name"],
+            id=dealer_doc["id"],
+            lat=dealer_doc["lat"],
+            long=dealer_doc["long"],
+            short_name=dealer_doc["short_name"],
+            state=dealer_doc["state"],
+            st=dealer_doc["st"],
+            zip=dealer_doc["zip"]
+        )
+        return dealer_obj
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
 # def analyze_review_sentiments(text):
@@ -107,7 +123,6 @@ def analyze_review_sentiments(text):
     response = natural_language_understanding.analyze(text=text, language="en", features=Features(sentiment=SentimentOptions(targets=[text]))).get_result()
     label = json.dumps(response, indent=2)
     label = response["sentiment"]["document"]['label']
-    print(label)
     return label
 
 

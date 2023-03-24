@@ -19,7 +19,9 @@
         <nav class="navbar navbar-light bg-light">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#">Dealership Review</a>
+                    <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Dealership Review</a>
+                    <a class="navbar-brand" href="{% url 'djangoapp:about' %}">About Us</a>
+                    <a class="navbar-brand" href="{% url 'djangoapp:contact' %}">Contact Us</a>
                 </div>
                 <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
@@ -49,37 +51,33 @@
         </div>
         {% endif %}
     <!--Add a dealer table here -->
-        <table class="table" id="table" data-filter-control="true">
-            <thead>
-                <tr>
-                    <th scope="col" data-field="id">ID</th>
-                    <th scope="col" data-field="full_name">Dealer Name</th>
-                    <th scope="col" data-field="city">City</th>
-                    <th scope="col" data-field="address">Address</th>
-                    <th scope="col" data-field="zip">Zip</th>
-                    <th scope="col" data-field="st" data-filter-control="select">State</th>
-                </tr>
-                <tbody>
-                    {% for dealer in dealerships_list %}
-                        <tr>
-                            <th scope="row">{{ dealer.id }}</td>
-                            <td><a href="{% url 'djangoapp:dealer_details' dealer.id %}">{{ dealer.full_name }}</a></td>
-                            <td>{{ dealer.address }}</td>
-                            <td>{{ dealer.city }}</td>
-                            <td>{{ dealer.zip }}</td>
-                            <td>{{ dealer.st }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </thead>
+        <div class="container-fluid">   
+            <table class="table" id="table" data-filter-control="true" data-sortable-class="table-active" data-sortable="true" >
+                <thead>
+                    <tr>
+                        <th scope="col" data-field="id" data-sortable="true">ID</th>
+                        <th scope="col" data-field="full_name">Dealer Name</th>
+                        <th scope="col" data-field="city">City</th>
+                        <th scope="col" data-field="address">Address</th>
+                        <th scope="col" data-field="zip">Zip</th>
+                        <th scope="col" data-field="st" data-filter-control="select">State</th>
+                    </tr>
+                    <tbody>
+                        {% for dealer in dealerships_list %}
+                            <tr>
+                                <th scope="row">{{ dealer.id }}</td>
+                                <td><a href="{% url 'djangoapp:dealer_details' dealer.id %}">{{ dealer.full_name }}</a></td>
+                                <td>{{ dealer.address }}</td>
+                                <td>{{ dealer.city }}</td>
+                                <td>{{ dealer.zip }}</td>
+                                <td>{{ dealer.st }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </thead>
 
-        </table>
-
-        <footer>
-            <div class="text-center p-4">
-                <a class="btn btn-link" href="{% url 'djangoapp:about' %}">Contact Us</a>
-            </div>
-        </footer>
+            </table>
+        </div>
     </body>
     <script>
         $(function() {
